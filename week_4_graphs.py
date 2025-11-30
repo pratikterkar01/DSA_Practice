@@ -34,7 +34,7 @@ matrix.addEdge(0,2)
 matrix.addEdge(2,3)
 matrix.displayMatrix()
 
-## Adjecency list
+## Adjecency list  using nested list
 class AdjecencyList:
   def __init__(self,adj):
     self.adj = adj
@@ -81,17 +81,19 @@ l.addQueue(3)
 print(l.deque())
 print(l)
 
-adj = [[] for _ in range(4)]
+adj = [[] for _ in range(5)]
 adjcencyList = AdjecencyList(adj)
 adjcencyList.addEdge(2,3)
+adjcencyList.addEdge(2,4)
 adjcencyList.addEdge(0,2)
 adjcencyList.addEdge(1,3)
 adjcencyList.displayList()
-print(adjcencyList.showList)
+print(adj)
 
 ## BFS of graphn using adjecency list
 def bfs(adjList,root):
   (level,parent) = ({},{})
+  my_set = list()
   ## make all level and parent as -1 means unvisited
   for i in range(len(adjList)):
     level[i] = -1
@@ -101,14 +103,81 @@ def bfs(adjList,root):
   q.addQueue(root) ## 1st add the root in the queue
   while (not q.isEmpty()):
     s = q.deque()
+    my_set.append(s)
     for rec in adjList[s]:
       if (level[rec] == -1):
         level[rec] = level[s] + 1
         parent[rec] = s
         q.addQueue(rec)
-  return level,parent
+  return level,parent,my_set
 
 bfs(adj,2),adj
+
+## adjecency list using dist
+class adjListDist:
+  def __init__(self,adj=None):
+    self.adj = adj
+
+  def addEdge(self,i,j):
+    if i in self.adj:
+      self.adj[i].append(j)
+    else:
+      self.adj[i] = [j]
+
+    if j in self.adj:
+      self.adj[j].append(i)
+    else:
+      self.adj[j] = [i]
+
+  def displayList(self):
+    for i in self.adj:
+        print(f"{i}: ", end="")
+        for j in self.adj[i]:
+            print(j, end=" ")
+        print()
+
+  def showList(self):
+    return self.adj
+
+## BFS of graphn using adjecency list implementation of the dict insted of the nested list
+def bfsDict(root,adjList={}):
+  (level,parent) = ({},{})
+  my_set = list()
+  ## make all level and parent as -1 means unvisited
+  for i in (adjList.keys()):
+    level[i] = -1
+    parent[i] = -1
+  q = Queue()
+  level[root] = 0
+  q.addQueue(root) ## 1st add the root in the queue
+  while (not q.isEmpty()):
+    s = q.deque()
+    my_set.append(s)
+    for rec in adjList[s]:
+      if (level[rec] == -1):
+        level[rec] = level[s] + 1
+        parent[rec] = s
+        q.addQueue(rec)
+  return level,parent,my_set
+
+dist = {}
+adjcencyList = adjListDist(dist)
+adjcencyList.addEdge(2,3)
+adjcencyList.addEdge(2,4)
+adjcencyList.addEdge(1,2)
+adjcencyList.addEdge(1,3)
+adjcencyList.displayList()
+adjcencyList.displayList()
+dist
+
+bfsDict(2,dist)
+
+#### End note in adjecency list isted of the nested list like this [[],[]] dict is more efficient cause if we have graph member 11,12 ,30 then we cant use nested list
+### then we use dict {key:[]} this is very ise ful
+
+
+
+
 
 """#Trees"""
 
