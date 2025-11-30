@@ -75,6 +75,36 @@ class Queue:
   def __str__(self):
     return(str(self.queue))
 
+## Stack implementation
+class Stack:
+  def __init__(self):
+    self.stack = []
+
+  def push(self,v):
+      self.stack.append(v)
+
+  def pop(self):
+    v = None
+    if not self.isempty():
+      v = self.stack[-1]
+      self.stack = self.stack[:len(self.stack)-1]
+
+    return v
+
+  def isempty(self):
+    return (self.stack ==[])
+
+  def __str__(self):
+    return (str(self.stack))
+
+s = Stack()
+s.push(2)
+s.push(3)
+s.push(4)
+s.push(5)
+s.pop()
+print(s)
+
 l = Queue()
 l.addQueue(2)
 l.addQueue(3)
@@ -175,9 +205,7 @@ bfsDict(2,dist)
 #### End note in adjecency list isted of the nested list like this [[],[]] dict is more efficient cause if we have graph member 11,12 ,30 then we cant use nested list
 ### then we use dict {key:[]} this is very ise ful
 
-
-
-
+## DFS for adjecency list using dist
 
 """#Trees"""
 
