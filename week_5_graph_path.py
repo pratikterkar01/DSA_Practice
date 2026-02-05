@@ -15,7 +15,7 @@ If we have the -ve cycle in the graph then their is no sencse in the  shortest p
 ## adjecency list using dist
 class adjListDist:
   def __init__(self,adj=None):
-    self.adj = adj
+    self.adj = {}
 
   def addEdge(self,i,j,w):
     if i in self.adj:
@@ -37,12 +37,12 @@ class adjListDist:
 
 ## list format :- {node : [(connectes_node,weights)....],}
 dist ={}
-adjcencyList = adjListDist(dist)
+adjcencyList = adjListDist()
 adjcencyList.addEdge(2,3,10)
 adjcencyList.addEdge(2,4,20)
 adjcencyList.addEdge(1,2,5)
 adjcencyList.addEdge(1,3,8)
-dist
+adjcencyList.showList()
 
 graphDist = {}
 graph = adjListDist(graphDist)
@@ -67,7 +67,7 @@ graph.addEdge(7, 9, 1)
 graph.addEdge(8, 9, 4)
 
 graph.addEdge(9, 10, 2)
-graphDist
+graph.showList()
 
 graphDist2 = {}
 graph1 = adjListDist(graphDist2)
@@ -89,12 +89,7 @@ graph1.addEdge(6, 8, 1)
 
 graph1.addEdge(7, 8, 2)
 
-from IPython.core.interactiveshell import dis
-(distance,visited) =({2: 0, 3: 81, 4: 81, 1: 81}, {2: True, 3: False, 4: False, 1: False})
-nextd =   # min([distance[v] for v in dist.keys() if not visited[v]])
-nextvlist = [v for v in dist.keys() if not visited[v] and distance[v] == nextd]
-nextv =  min(nextvlist)
-print(nextd)
+
 '''visited[nextv] = True
 print(dist[1])
 for (d,v) in dist[nextv]:
@@ -152,7 +147,7 @@ def dijkestraUpdate(u,weiAdjList={}):
       #print(f"orignal distance {distance}")
       if not visited[key[0]] and key not in minQueue:
         visited[key[0]] = True
-        updateDist =  key[1] + minPop[1]
+        updateDist = round((key[1] + minPop[1]),2)
         distance[key[0]] = updateDist
         if key[0] in [6,8,7,5]:
            print(f"Inside not visited key {key} total dist from source {key[1] + minPop[1]}")
@@ -160,8 +155,8 @@ def dijkestraUpdate(u,weiAdjList={}):
       elif distance[key[0]] + minPop[1] < distance[key[0]] and key not in minQueue:
         if key[0] in [6,8,7,5]:
           print(f"Inside visited key {key} total dist from source {distance[key[0]] + minPop[1]}")
-        distance[key[0]] = (distance[key[0]] + minPop[1])
-        minQueue.append((key[0],distance[key[0]] + minPop[1]))
+        distance[key[0]] = round((distance[key[0]] + minPop[1]),2)
+        minQueue.append((key[0],round(distance[key[0]] + minPop[1]),2))
         if key[0] in [6,8,7,5]:
          print(f"key {key} total dist from source {key[1] + minPop[1]}")
     visited[minPop[0]] = True
@@ -170,9 +165,9 @@ def dijkestraUpdate(u,weiAdjList={}):
 
   return distance,visited
 
-#smalldist = dijkestraUpdate(2,dist)
-smalldist_2 = dijkestraUpdate(5,graphDist)
-smalldist_2
+smalldist_1 = dijkestraUpdate(2,adjcencyList.showList())
+#smalldist_2 = dijkestraUpdate(5,graphDist)
+smalldist_1
 
 #smalldist = dijkestraUpdate(2,dist)
 smalldist_2 = dijkestraUpdate(3,graphDist2)
@@ -198,93 +193,147 @@ test_sort = test.pop(0)
 print(test_sort)
 print(test)
 
-'''def dijkestraUpdate(u,weiAdjList={}):
+"""# Implementaion of the dijkstra in the map
+
+"""
+
+import math
+
+## input is the lattitude and longitude in the decimal form
+## note change degree to redian
+sangali = (16.862040446162, 74.55957246682142)
+wadi = (16.692476382636336, 74.60135909937262)
+R = 6371
+difflat = ((sangali[0] - wadi[0])*3.14) / 180
+difflog = ((sangali[1] - wadi[1])*3.14)/180
+print(difflat)
+print(difflog)
+#d = 2R sin⁻¹ √[ sin²(Δφ/2) + cosφ₁ cosφ₂ sin²(Δλ/2) ]
+d = 2*R*math.asin(math.sqrt((math.sin(difflat/2))**2 + math.cos((sangali[0]*3.14)/180)*math.cos((wadi[0]*3.14)/180)*(math.sin(difflog/2))**2))
+Road_distance = 1.05*1.25*d
+Road_distance,d
+
+## approx method
+avg_lat = (sangali[1] + wadi[1])/2
+Distance = math.sqrt(((sangali[0] - wadi[0]) * 111)**2 + ((sangali[1] - wadi[1]) * 111 * math.cos(avg_lat))**2)
+Distance*1.3
+
+"""## adjList for the map with lat long
+
+"""
+
+### implementaion of the weighted  graph
+## adjecency list using dist
+class AdjListDist:
+  def __init__(self,adj=None):
+    self.adj = {}
+
+  def addEdge(self,i,j,iCoOrdinate: tuple,jCoOrdinate: tuple):
+    ## find arial dist
+    import math
+    w = round(self.distance(iCoOrdinate,jCoOrdinate),2)
+    if i in self.adj:
+      self.adj[i].append((j,w))
+    else:
+      self.adj[i] = [(j,w)]
+
+    if j in self.adj:
+      self.adj[j].append((i,w))
+    else:
+      self.adj[j] = [(i,w)]
+  def distance(self,iCoOrdinate: tuple,jCoOrdinate: tuple):
+    import math
+    R = 6371
+    difflat = ((iCoOrdinate[0] - jCoOrdinate[0])*3.14) / 180
+    difflog = ((iCoOrdinate[1] - jCoOrdinate[1])*3.14)/180
+    print(difflat)
+    print(difflog)
+    #d = 2R sin⁻¹ √[ sin²(Δφ/2) + cosφ₁ cosφ₂ sin²(Δλ/2) ]
+    d = 2*R*math.asin(math.sqrt((math.sin(difflat/2))**2 + math.cos((iCoOrdinate[0]*3.14)/180)*math.cos((jCoOrdinate[0]*3.14)/180)*(math.sin(difflog/2))**2))
+    return d
+  def displayList(self):
+    for node in self.adj:
+          print(f"{node}:", self.adj[node])
+
+  def showList(self):
+    return self.adj
+
+locations = {
+    "sangli": (16.862040446162, 74.55957246682142),
+    "miraj": (16.8303, 74.6424),
+    "kolhapur": (16.7050, 74.2433),
+    "wadi": (16.692476382636336, 74.60135909937262),
+    "pune": (18.5204, 73.8567)
+}
+map = AdjListDist()
+
+map.addEdge("sangli", "miraj", locations["sangli"], locations["miraj"])
+map.addEdge("sangli", "wadi", locations["sangli"], locations["wadi"])
+map.addEdge("miraj", "kolhapur", locations["miraj"], locations["kolhapur"])
+map.addEdge("kolhapur", "wadi", locations["kolhapur"], locations["wadi"])
+map.addEdge("wadi", "pune", locations["wadi"], locations["pune"])
+map.showList()
+
+shortRoute = dijkestraUpdate("sangli",map.showList())
+shortRoute
+
+## Dijkstra algo giving the short distance and the route
+def shortDistRoute(u,dest,weiAdjList={}):
   infinity = 1+len(weiAdjList.keys())*max([d for i in weiAdjList
                                           for v,d in weiAdjList.get(i)])
-  print(infinity)
-  (visited,distance) = ({},{})
+  (visited,distance,privousNode) = ({},{},{})
   for key in weiAdjList.keys():
      visited[key],distance[key] = False,infinity
   visited[u] = True
   distance[u] = 0
-  minD = ()
-  for key in weiAdjList.keys():
-    if visited[key]:
-      print(True)
-    else:
-      for v in range(len(weiAdjList[key]) -1 ):
-        if weiAdjList[key][v][1] < weiAdjList[key][v + 1][1]:
-          minD = weiAdjList[key][v]
+  minQueue = []
+  minQueue.append((u,0))
+  #print(f"before queue : {minQueue}")
+  i = 0
+  while minQueue:
+    minPop = minQueue.pop(0)
+    #print(f"after minpop {i} an sort {minPop}")
+    #print(f"after pop {i} an sort {minQueue}")
+    #print(f"connected node to pop {weiAdjList[minPop[0]]}")
+    #print(visited)
+    updateAdjNodeList = [t for t in weiAdjList[minPop[0]] if t[0] != minPop[0]]
+    for key in updateAdjNodeList:
+      #print(f"orignal distance {distance}")
+      if not visited[key[0]] and key not in minQueue:
+        visited[key[0]] = True
+        updateDist = round((key[1] + minPop[1]),2)
+        distance[key[0]] = updateDist
+        if key[0] not in privousNode:
+          privousNode[key[0]] = minPop[0]
 
-        if v == len(weiAdjList[key]) - 2 and minD == 0:
-          minD = weiAdjList[key][-1]
-      print(minD)
-      #visited[minD[0]] = True
-      #distance[minD[0]] = minD[1]
-      minD = 0
+        minQueue.append((key[0],updateDist))
+      elif distance[key[0]] + minPop[1] < distance[key[0]] and key not in minQueue:
 
-
-
-  for key in weiAdjList.keys():
-    print(key)
-    print(weiAdjList[key])
-    nextd = []
-    for v,d in weiAdjList[key]:
-      minD = d
-    minNext = []
-    print((nextd))
-    nextd = min([distance[v] for v in weiAdjList[key] if not visited[v]])
-    print(f"nextd {nextd}")
-    nextvlist = [v for v in weiAdjList.keys() if not visited[v] and distance[v] == nextd]
-    print(f"nextv list :{nextvlist}")
-    if visited == []:
+        privousNode[key[0]] = minPop[0]
+        distance[key[0]] = round((distance[key[0]] + minPop[1]),2)
+        minQueue.append((key[0],round(distance[key[0]] + minPop[1]),2))
+        if key[0] in [6,8,7,5]:
+         print(f"key {key} total dist from source {key[1] + minPop[1]}")
+    visited[minPop[0]] = True
+    minQueue = sorted(minQueue,key=lambda x : x[1])
+  route = []
+  routeQueue = []
+  route.append(dest)
+  routeQueue.append(dest)
+  print(f" route and queue {route} {routeQueue}")
+  while routeQueue:
+    popNode = routeQueue.pop(0)
+    if popNode == u:
       break
-    nextv = min(nextvlist)
-    visited[nextv] = True
-    for (v,d) in weiAdjList[nextv]:
-      if not visited[v]:
-        distance[v] = min(distance[v],distance[nextv])
-
-
-  return distance,visited'''
-
-class solution:
-  def shortestPath(self, n :int,edges: List[List[int]],src:int) -> Dist:
-    adj = {}
-    for i in range(n):
-      adj[i] = []
-
-    for src,dist,weight in edges:
-      adj[src].apppend([dist,weight])
-
-    shortest = {}
-    minHeap = [[0,src]]
-    while minHeap:
-      w1,h1 = heapq.heappop(minHeap)
-      if n1 in shortest:
-        continue
-      shortest[n1] = w1
-
-      for n2,w2 in adj[n1]:
-        if n2 not in shortest:
-          heapq.heappush(minheap,[w1 + w2 ,n2])
-
-for i in range(n):
-  if i not in shortest:
-    shortest[i] = -1
+    print(f"popped route node {popNode}")
+    route.append(privousNode[popNode])
+    routeQueue.append(privousNode[popNode])
+    print(f"1 route and queue {route} {routeQueue}")
 
 
 
-    return shortest
 
-distance[u] = 0
-  visited[u] = True
-  shortest = {}
-  vHeap = []
-  vHeap.extend(weiAdjList[u])
-  dMin = ()
-  for i in range(len(vHeap) -1):
-    if vHeap[i][1] < vHeap[i+1][1]:
-      dMin = vHeap[i]
-  shortest[dMin[0]] = dMin[1]
-  print(f"shortest path :{shortest}")
+  return distance,visited,privousNode,route
+
+shortRoute = shortDistRoute(5,6,graph.showList())
+shortRoute
