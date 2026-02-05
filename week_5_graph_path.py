@@ -89,7 +89,12 @@ graph1.addEdge(6, 8, 1)
 
 graph1.addEdge(7, 8, 2)
 
-
+from IPython.core.interactiveshell import dis
+(distance,visited) =({2: 0, 3: 81, 4: 81, 1: 81}, {2: True, 3: False, 4: False, 1: False})
+nextd =   # min([distance[v] for v in dist.keys() if not visited[v]])
+nextvlist = [v for v in dist.keys() if not visited[v] and distance[v] == nextd]
+nextv =  min(nextvlist)
+print(nextd)
 '''visited[nextv] = True
 print(dist[1])
 for (d,v) in dist[nextv]:
@@ -320,20 +325,20 @@ def shortDistRoute(u,dest,weiAdjList={}):
   routeQueue = []
   route.append(dest)
   routeQueue.append(dest)
-  print(f" route and queue {route} {routeQueue}")
+  #print(f" route and queue {route} {routeQueue}")
   while routeQueue:
     popNode = routeQueue.pop(0)
     if popNode == u:
       break
-    print(f"popped route node {popNode}")
+    #print(f"popped route node {popNode}")
     route.append(privousNode[popNode])
     routeQueue.append(privousNode[popNode])
-    print(f"1 route and queue {route} {routeQueue}")
+    #print(f"1 route and queue {route} {routeQueue}")
 
 
 
 
-  return distance,visited,privousNode,route
+  return distance[dest],route[::-1]
 
-shortRoute = shortDistRoute(5,6,graph.showList())
+shortRoute = shortDistRoute(3,8,graph.showList())
 shortRoute
